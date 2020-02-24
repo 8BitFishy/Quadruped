@@ -93,7 +93,10 @@ def moveservos(servolist):
     print("Moving complete\n")
 
     for Servo in servolist:
-      Servo.position = Servo.target
+      if Servo.inverted == 0:
+        Servo.position = abs(Servo.target)
+      else:
+        Servo.position= Servo.target
     return servolist
 
 
@@ -111,19 +114,19 @@ def stepcycle(servolist):
     if (phase == 1):
       movelist = [0, 4]
       target = up
-
+    
     elif (phase == 2):
       movelist = [8]
       target = up
     
-    elif (phase == 3):
+    if (phase == 3):
       movelist = [0, 4]
       target = midpoint
-
+    
     elif (phase == 4):
       movelist = [8]
       target = down
-
+    
 
     for Servo in servolist:
       if (Servo.pin in movelist):
