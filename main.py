@@ -39,23 +39,19 @@ def Servocheck(servolist):
         
        
 def targetadjustment(position, target, inverted):
-    print("Servo position: {}, Servo target: {}, Servo inverted: {}".format(position, target, inverted))
+    #print("Servo position: {}, Servo target: {}, Servo inverted: {}".format(position, target, inverted))
     #invert target if required
 
     if (inverted == 1):
         target = 180-target
-        print("inverted, new target - {}".format(target))
+        #print("inverted, new target - {}".format(target))
 
     #step between position and target
     if (target < position):
         target = -target
-        print("Target smaller, new target - {}".format(target))
-    
+        #print("Target smaller, new target - {}".format(target))
 
-        
-
-        
-    print("Servo position: {}, Servo target: {}, Servo inverted: {}".format(position, target, inverted))
+    #print("Servo position: {}, Servo target: {}, Servo inverted: {}".format(position, target, inverted))
 
     return target
        
@@ -71,7 +67,7 @@ def moveservos(servolist):
         
         if Servo.position != Servo.target:
 
-            print("\n\nAdjusting target for servo {}".format(Servo.pin))
+            print("\nAdjusting target for servo {}".format(Servo.pin))
             Servo.target = targetadjustment(Servo.position, Servo.target, Servo.inverted)
             if Servo.target < 0:
                 Servo.position = -Servo.position
@@ -82,26 +78,59 @@ def moveservos(servolist):
             print("Target after adjustment {}".format(Servo.target))
 
 
-    print("\n\nMaxoffset {}".format(maxoffset))     
+    print("\nMaxoffset {}\n".format(maxoffset))     
     for i in range (0, maxoffset):
-        print("\nMovement - {}".format(i))
+        #print("\nMovement - {}".format(i))
         for Servo in servolist:
             
             if abs(Servo.position != Servo.target):
 
-                print("Moving servo {} from position {} to position {} with inversion {}".format(Servo.pin, Servo.position, Servo.target, Servo.inverted))
-                print("Servo position before move - {}".format(abs(Servo.position)))
+                #print("Moving servo {} from position {} to position {}".format(Servo.pin, abs(Servo.position), Servo.target))
                 #kit.servo[Servo.pin].angle = abs(Servo.position)
                 time.sleep(speed)
                 Servo.position = Servo.position + 1
-                print("Servo position after move - {}".format(Servo.position))
 
                 
-    
     return
+
+
+
+def stepcycle(servolist):
+
+  for Servo in servolist:
+    if Servo.sidex == 'left' and Servo.sidey == 'front':
+
+      if Servo.part != 'hip':
+        Servo.target = up
+        print("Moving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
+      
+  moveservos(servolist)
+  for Servo in servolist:
+      Servo.position = Servo.target
+      print("Servo {} now in position {}".format(Servo.pin, abs(Servo.position)))
+
+
+  for Servo in servolist:
+    if Servo.sidex == 'left' and Servo.sidey == 'front' and Servo.part == 'hip':
+      Servo.target = up
+      print("\nMoving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
+
+  moveservos(servolist)
+
+
+
+
+  
+  
+
+
+  return
+
 
    
     
+
+
 
 
 
@@ -219,22 +248,28 @@ if __name__ == '__main__':
         else:
             Servo.target = 90
     '''
-
+    '''
     for Servo in servolist:
-        if (Servo.part == 'foot'):
-            Servo.target = 40
+        if (Servo.pin == 1 or Servo.pin == 4):
+            Servo.target = 70
             
-        elif (Servo.part == 'leg'):
-            Servo.target = 150
+        elif (Servo.pin == 0 or Servo.pin == 5):
+            Servo.target = 100
             
         else:
             Servo.target = 90
-            
+       
     moveservos(servolist)
+    for Servo in servolist:
+      Servo.position = abs(Servo.target)
+      print("Servo {} now at position {}".format(Servo.pin, Servo.position))
         
+    '''
+
+    stepcycle(servolist)
 
 
-    print("\n\n\nRun end \n\n\n")
+    print("\n\n\nRun end\n\n\n")
 
         
     exit()
