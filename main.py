@@ -66,8 +66,8 @@ def moveservos(servolist):
     for Servo in servolist:
         
         if Servo.position != Servo.target:
-
-            print("\nAdjusting target for servo {}".format(Servo.pin))
+            #print("Moving servo {}".format(Servo.pin))
+            #print("\nAdjusting target for servo {}".format(Servo.pin))
             Servo.target = targetadjustment(Servo.position, Servo.target, Servo.inverted)
             if Servo.target < 0:
                 Servo.position = -Servo.position
@@ -75,7 +75,7 @@ def moveservos(servolist):
             if (abs(Servo.position - Servo.target)>maxoffset):
                 maxoffset = abs(Servo.position - Servo.target)
                 
-            print("Target after adjustment {}".format(Servo.target))
+            #print("Target after adjustment {}".format(Servo.target))
 
 
     print("\nMaxoffset {}\n".format(maxoffset))     
@@ -90,35 +90,78 @@ def moveservos(servolist):
                 time.sleep(speed)
                 Servo.position = Servo.position + 1
 
-                
-    return
+    print("Moving complete\n")
+
+    for Servo in servolist:
+      Servo.position = Servo.target
+    return servolist
+
+
 
 
 
 def stepcycle(servolist):
+  print("\nWalk cycle beginning\n")
+  phase = 1
+  
+  while phase < 5:
+    print("Phase {}".format(phase))
+    movelist = []
 
-  for Servo in servolist:
-    if Servo.sidex == 'left' and Servo.sidey == 'front':
+    if (phase == 1):
+      movelist = [0, 4]
+      target = up
 
-      if Servo.part != 'hip':
-        Servo.target = up
-        print("Moving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
-      
-  moveservos(servolist)
-  for Servo in servolist:
-      Servo.position = Servo.target
-      print("Servo {} now in position {}".format(Servo.pin, abs(Servo.position)))
+    elif (phase == 2):
+      movelist = [8]
+      target = up
+    
+    elif (phase == 3):
+      movelist = [0, 4]
+      target = midpoint
 
-
-  for Servo in servolist:
-    if Servo.sidex == 'left' and Servo.sidey == 'front' and Servo.part == 'hip':
-      Servo.target = up
-      print("\nMoving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
-
-  moveservos(servolist)
+    elif (phase == 4):
+      movelist = [8]
+      target = down
 
 
+    for Servo in servolist:
+      if (Servo.pin in movelist):
+        Servo.target = target
+        print("Moving servo {} from {} to {}".format(Servo.pin, Servo.position, Servo.target))
 
+    servolist = moveservos(servolist)
+    phase +=1
+
+    '''
+
+      for Servo in servolist:
+        if Servo.sidex == 'left' and Servo.sidey == 'front':
+          if Servo.part != 'hip':
+            Servo.target = up
+            print("Moving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
+          
+
+      servolist = moveservos(servolist)
+
+
+      for Servo in servolist:
+        if Servo.sidex == 'left' and Servo.sidey == 'front' and Servo.part == 'hip':
+          Servo.target = up
+          print("\nMoving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
+
+      servolist = moveservos(servolist)
+
+      for Servo in servolist:
+          if Servo.sidex == 'left' and Servo.sidey == 'front':
+            if Servo.part != 'hip':
+              print("Moving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
+              Servo.target = midpoint
+
+      servolist = moveservos(servolist)
+
+      for Servo in servolist:
+    '''
 
   
   
@@ -156,6 +199,7 @@ up = 170
 down = 10
 
 servolist = []
+
 
 
 speed = 0.001
@@ -214,6 +258,7 @@ if __name__ == '__main__':
         
         Servo = Servos()
         servolist.append(Servo)
+
         #print("Servo stats:\nServo {} in position {}{}{} with inversion {}".format(pin, sidey, sidex, part, inverted))
 
 
@@ -268,6 +313,11 @@ if __name__ == '__main__':
 
     stepcycle(servolist)
 
+
+
+    for Servo in servolist:
+      print("Servo {} at position {}".format(Servo.pin, Servo.position))
+    
 
     print("\n\n\nRun end\n\n\n")
 
