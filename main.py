@@ -105,26 +105,28 @@ def moveservos(servolist):
 
 def stepcycle(servolist):
   print("\nWalk cycle beginning\n")
-  phase = 1
-  
+  phase = 0
+
+  e = 0
+
   while phase < 5:
     print("Phase {}".format(phase))
-    movelist = []
+    movelist = [0, 0]
 
-    if (phase == 1):
-      movelist = [0, 4]
+    if (phase == 0):
+      movelist = [legs[e][0], legs[e][1]]
       target = up
     
-    elif (phase == 2):
-      movelist = [8]
+    elif (phase == 1):
+      movelist = [legs[e][2]]
       target = up
     
-    if (phase == 3):
-      movelist = [0, 4]
+    if (phase == 2):
+      movelist = [legs[e][0], legs[e][1]]
       target = midpoint
     
-    elif (phase == 4):
-      movelist = [8]
+    elif (phase == 3):
+      movelist = [legs[e][2]]
       target = down
     
 
@@ -203,7 +205,7 @@ down = 10
 
 servolist = []
 
-
+legs = [[0, 4, 8],[1, 5, 9],[2, 6, 10],[3, 7, 11]]
 
 speed = 0.001
 
@@ -263,7 +265,6 @@ if __name__ == '__main__':
         servolist.append(Servo)
 
         #print("Servo stats:\nServo {} in position {}{}{} with inversion {}".format(pin, sidey, sidex, part, inverted))
-
 
 
 
