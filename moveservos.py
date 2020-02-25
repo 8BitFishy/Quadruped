@@ -11,12 +11,11 @@ def moveservos(servolist, speed):
         if Servo.position != Servo.target:
             #print("Moving servo {}".format(Servo.pin))
             #print("\nAdjusting target for servo {}".format(Servo.pin))
-            Servo.target = targetadjustment.targetadjustment(Servo.position, Servo.target, Servo.inverted)
-            if Servo.target < 0:
-                Servo.position = -Servo.position
+            Servo = targetadjustment.targetadjustment(Servo)
                 
             if (abs(Servo.position - Servo.target)>maxoffset):
                 maxoffset = abs(Servo.position - Servo.target)
+                print("{} - {} = {}".format(Servo.position, Servo.target, maxoffset))
                 
             #print("Target after adjustment {}".format(Servo.target))
 

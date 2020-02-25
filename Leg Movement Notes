@@ -1,0 +1,46 @@
+Orientation 1 - normal forward
+
+leg 0 -- front left
+leg 1 -- back left
+leg 2 -- back right
+leg 3 -- front right
+
+hips phase 0 -- 40 - 140
+hips phase 1 -- 140 - 40
+
+Order -- leg 0, leg 2, leg 1, leg 3
+
+
+
+Orientation 2 - normal backward
+
+leg 0 -- back right
+leg 1 -- front right
+leg 2 -- front left
+leg 3 -- back left
+
+all hips inverted
+
+
+
+orientation 3 - right forward
+
+leg 0 -- back left
+leg 1 -- back right
+leg 2 -- front right
+leg 3 -- front left
+
+hip movement - leg 1 & 3 inverted 
+
+
+
+orientation 4 right backward
+
+leg 0 -- front right
+leg 1 -- front left
+leg 2 -- back left
+leg 3 -- back right
+
+hip movement - leg 0 & 2 inverted
+
+
