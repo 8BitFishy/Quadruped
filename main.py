@@ -1,5 +1,9 @@
 import time
 import os
+import targetadjustment
+import stepcycle
+import moveservos
+
 #from adafruit_servokit import ServoKit
 
  
@@ -8,172 +12,11 @@ import os
 '''
 kit = ServoKit(channels=16)
 
-def Servocheck(servolist):
-    for Servo in servolist:
-        print("Moving servo {} to position {}".format(Servo.pin, midpoint))
-        kit.servo[Servo.pin].angle = midpoint
-        time.sleep(speed)
-        
-        if(Servo.inverted == 1):
-            target = 180-up
-            print("inverted, new target: {}".format(target))
-        else:
-            target = up
-        
-        print("Moving servo {} to up position: {}".format(Servo.pin, target))
-        kit.servo[Servo.pin].angle = target
-        time.sleep(speed)
 
-        print("Moving servo {} to position {}".format(Servo.pin, midpoint))
-        kit.servo[Servo.pin].angle = midpoint
-        time.sleep(speed)
-        
-    return
-        
- 
  
  '''
  
         
-        
-        
-       
-def targetadjustment(position, target, inverted):
-    #print("Servo position: {}, Servo target: {}, Servo inverted: {}".format(position, target, inverted))
-    #invert target if required
-
-    if (inverted == 1):
-        target = 180-target
-        #print("inverted, new target - {}".format(target))
-
-    #step between position and target
-    if (target < position):
-        target = -target
-        #print("Target smaller, new target - {}".format(target))
-
-    #print("Servo position: {}, Servo target: {}, Servo inverted: {}".format(position, target, inverted))
-
-    return target
-       
-       
-       
-      
-       
-def moveservos(servolist):
-
-    maxoffset = 0
-    
-    for Servo in servolist:
-        
-        if Servo.position != Servo.target:
-            #print("Moving servo {}".format(Servo.pin))
-            #print("\nAdjusting target for servo {}".format(Servo.pin))
-            Servo.target = targetadjustment(Servo.position, Servo.target, Servo.inverted)
-            if Servo.target < 0:
-                Servo.position = -Servo.position
-                
-            if (abs(Servo.position - Servo.target)>maxoffset):
-                maxoffset = abs(Servo.position - Servo.target)
-                
-            #print("Target after adjustment {}".format(Servo.target))
-
-
-    print("\nMaxoffset {}\n".format(maxoffset))     
-    for i in range (0, maxoffset):
-        #print("\nMovement - {}".format(i))
-        for Servo in servolist:
-            
-            if abs(Servo.position != Servo.target):
-
-                #print("Moving servo {} from position {} to position {}".format(Servo.pin, abs(Servo.position), Servo.target))
-                #kit.servo[Servo.pin].angle = abs(Servo.position)
-                time.sleep(speed)
-                Servo.position = Servo.position + 1
-
-    print("Moving complete\n")
-
-    for Servo in servolist:
-      if Servo.inverted == 0:
-        Servo.position = abs(Servo.target)
-      else:
-        Servo.position= Servo.target
-    return servolist
-
-
-
-
-
-def stepcycle(servolist):
-  print("\nWalk cycle beginning\n")
-  phase = 0
-
-  e = 0
-
-  while phase < 5:
-    print("Phase {}".format(phase))
-    movelist = [0, 0]
-
-    if (phase == 0):
-      movelist = [legs[e][0], legs[e][1]]
-      target = up
-    
-    elif (phase == 1):
-      movelist = [legs[e][2]]
-      target = up
-    
-    if (phase == 2):
-      movelist = [legs[e][0], legs[e][1]]
-      target = midpoint
-    
-    elif (phase == 3):
-      movelist = [legs[e][2]]
-      target = down
-    
-
-    for Servo in servolist:
-      if (Servo.pin in movelist):
-        Servo.target = target
-        print("Moving servo {} from {} to {}".format(Servo.pin, Servo.position, Servo.target))
-
-    servolist = moveservos(servolist)
-    phase +=1
-
-    '''
-
-      for Servo in servolist:
-        if Servo.sidex == 'left' and Servo.sidey == 'front':
-          if Servo.part != 'hip':
-            Servo.target = up
-            print("Moving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
-          
-
-      servolist = moveservos(servolist)
-
-
-      for Servo in servolist:
-        if Servo.sidex == 'left' and Servo.sidey == 'front' and Servo.part == 'hip':
-          Servo.target = up
-          print("\nMoving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
-
-      servolist = moveservos(servolist)
-
-      for Servo in servolist:
-          if Servo.sidex == 'left' and Servo.sidey == 'front':
-            if Servo.part != 'hip':
-              print("Moving {} {} {} from {} to {}".format(Servo.sidey, Servo.sidex, Servo.part, Servo.position, Servo.target))
-              Servo.target = midpoint
-
-      servolist = moveservos(servolist)
-
-      for Servo in servolist:
-    '''
-
-  
-  
-
-
-  return
-
 
    
     
@@ -215,13 +58,10 @@ speed = 0.001
 
 if __name__ == '__main__':
 
-    '''
-    for i in range (0, 12): 
-
-        kit.servo[i].angle = 90
-    '''
 
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
     for i in range (0, 12): 
         #assign body parts
         if(i <= 3):
@@ -315,7 +155,7 @@ if __name__ == '__main__':
         
     '''
 
-    stepcycle(servolist)
+    stepcycle.stepcycle(servolist, legs, up, down, midpoint, speed)
 
 
 
