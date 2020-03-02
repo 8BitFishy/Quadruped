@@ -4,14 +4,14 @@ import targetadjustment
 import stepcycle
 import moveservos
 
-#from adafruit_servokit import ServoKit
+from adafruit_servokit import ServoKit
 
  
 # Set channels to the number of servo channels on your kit.
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
 
 
-#kit = ServoKit(channels=16)
+kit = ServoKit(channels=16)
 
 
 
@@ -30,15 +30,16 @@ class Servos:
       
       
       
-midpoint = 90
-up = 170
-down = 10
+midpoint = 100
+up = 140
+down = 40
 
 servolist = []
 
-legs = [[0, 4, 8],[1, 5, 9],[2, 6, 10],[3, 7, 11]]
+#legs = [[0, 4, 8],[1, 5, 9],[2, 6, 10],[3, 7, 11]]
+legs = [[0, 4, 8],[2, 6, 10],[3, 7, 11],[1, 5, 9]]
 
-speed = 0.001
+speed = 0.002
 
 
 
@@ -78,16 +79,15 @@ if __name__ == '__main__':
             sidey = 'back'
         
         #assign inversion rule
-        if (i<=3):
-            inverted = 0
-        elif (i==10 or i == 11):
+
+        if (i==10 or i == 11):
             inverted = 0
         else:
             inverted = 1
            
         #Set position to 90 and register
-        #kit.servo[i].angle = 90
-        position = target = 90
+        kit.servo[i].angle = midpoint
+        position = target = midpoint
         
         Servo = Servos()
         servolist.append(Servo)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
        
     print("\n\nBeginning Run\n\n")
-
+    time.sleep(2)
 
 
 
@@ -146,9 +146,12 @@ if __name__ == '__main__':
     stepcycle.stepcycle(servolist, legs, up, down, midpoint, speed)
 
 
-
+    
+    
     for Servo in servolist:
-      print("Servo {} at position {}".format(Servo.pin, Servo.position))
+      kit.servo[Servo.pin].angle = midpoint
+    
+    
     
 
     print("\n\n\nRun end\n\n\n")
